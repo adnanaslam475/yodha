@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="87px" height="26px" viewBox="0 0 87 26" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>education</title>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="HAMBURGER-EXTENSION" transform="translate(-19.000000, -268.000000)">
+            <g id="education" transform="translate(20.000000, 269.000000)">
+                <rect id="Rectangle" stroke="#99AAF9" fill="#FFFFFF" x="0" y="0" width="85" height="24" rx="8"></rect>
+                <text id="Education" font-family="Helvetica-Light, Helvetica" font-size="12" font-weight="300" fill="#AEAEAE">
+                    <tspan x="27" y="16">Education</tspan>
+                </text>
+                <g transform="translate(3.000000, 0.000000)">
+                    <rect id="Rectangle" stroke="#979797" fill="#D8D8D8" opacity="0" x="0" y="0" width="24" height="24"></rect>
+                    <g id="noun_education_2300707" transform="translate(1.000000, 5.000000)" fill-rule="nonzero">
+                        <path d="M10.0001375,9.80499871 L9.66332913,9.64781038 L4,7 L4,10.5578164 C4,12.4588316 6.68621835,14 9.99986253,14 C13.3137816,14 16,12.4588316 16,10.5578164 L16,7 L10.336121,9.64781038 L10.0001375,9.80499871 Z" id="Path" fill="#99AAF9"></path>
+                        <polygon id="Path" fill="#CAE7FF" points="10.4998685 0 0 4.49986798 10.4998685 9 16.2396704 6.53988558 21 4.49986798"></polygon>
+                        <rect id="Rectangle" fill="#589CD4" x="19" y="4" width="1" height="7"></rect>
+                        <path d="M20,11.5488506 C20,11.7979885 19.7760924,12 19.4998868,12 L19.4998868,12 C19.2236812,12 19,11.7979885 19,11.5488506 L19,10.4511494 C19,10.2017241 19.2236812,10 19.4998868,10 L19.4998868,10 C19.7760924,10 20,10.2017241 20,10.4511494 L20,11.5488506 Z" id="Path" fill="#CAE7FF"></path>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

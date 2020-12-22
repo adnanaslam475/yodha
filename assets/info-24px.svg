@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="17px" height="17px" viewBox="0 0 17 17" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>info-24px</title>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="HAMBURGER-EXTENSION" transform="translate(-145.000000, -530.000000)">
+            <g id="ques-price" transform="translate(0.000000, 513.000000)">
+                <g id="info-24px" transform="translate(145.000000, 17.000000)">
+                    <polygon id="Path" points="0 0 17 0 17 17 0 17"></polygon>
+                    <path d="M8,2 C4.136,2 1,5.136 1,9 C1,12.864 4.136,16 8,16 C11.864,16 15,12.864 15,9 C15,5.136 11.864,2 8,2 Z M8.7,12.5 L7.3,12.5 L7.3,7.6 L8.7,7.6 L8.7,12.5 Z M8.7,6.2 L7.3,6.2 L7.3,4.8 L8.7,4.8 L8.7,6.2 Z" id="Shape" fill="#FFFFFF" fill-rule="nonzero"></path>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>
