@@ -12,6 +12,7 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 import DashBoard from '../screen/DashBoard';
 import Profile from '../screen/Profile';
 import Notifications from '../screen/Notifications';
+// import * as styles from '../screen/Styles'
 import Settings from '../screen/Settings';
 const url = 'https://images.unsplash.com/photo-1529665253569-6d01c0eaf7b6?ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8cHJvZmlsZXxlbnwwfHwwfHw%3D&ixlib=rb-1.2.1&w=1000&q=80';
 
@@ -35,42 +36,45 @@ const styles = StyleSheet.create({
         borderWidth: 5,
     },
     drawerimg: {
-        display: 'flex', flexDirection: 'column',
-        width: width - 130,
-        padding: 5,
-        paddingTop: height * 0.05,
+        display: 'flex',
+        flexDirection: 'column',
+        width: width / 1.5,
+        paddingTop: height * 0.08,
         borderBottomWidth: 1,
-        borderBottomColor: 'gray',
+        borderBottomColor: 'white',
         alignItems: 'center',
-        justifyContent: 'center', position: 'relative',
+        color: 'white',
+        paddingBottom: 10,
+        justifyContent: 'center',
+        position: 'relative',
     },
     img: {
         width: width * 0.25,
-        height: height * 0.15,
+        height: height * 0.16,
         borderRadius: 100,
-        borderColor: 'blue',
-        borderWidth: 5,
-    }, draweritem: {
-        marginBottom: 2,
-        backgroundColor: 'blue',
+        borderColor: 'white',
+        borderWidth: 20,
+    },
+    draweritem: {
+        padding: 10,
         display: 'flex',
         flexDirection: 'row',
-        height: height * 0.07,
         alignItems: 'center',
-        width: width - 120,
-        paddingLeft: 5,
+        paddingLeft: width * 0.07,
     },
     icon: {
         position: 'absolute',
-        top: 10, right: 0
+        top: 10,
+        right: 10
     },
     drawerStyle: {
-        backgroundColor: 'yellow',
-        borderTopRightRadius: 20,
-        borderBottomEndRadius: 20,
-        borderWidth: 5,
+        backgroundColor: 'blue',
+        color: 'white',
+        // display:'flex',
+        // alignItems:'center',
         width: width / 1.5,
-    }
+    },
+
 });
 
 const defaultStackNavOptions = {
@@ -193,7 +197,8 @@ const BottomTabs = () => {
 const drawer_arr = [{ name: "dashboard", icon: 'home', text: 'Home' },
 { name: "Notifications", icon: 'notifications', text: 'Notifications' },
 { name: "Settings", icon: 'settings', text: 'Settings' },
-{ name: "Profile", icon: 'person', text: 'Person' },
+{ name: "Profile", icon: 'person', text: 'Profile' },
+{ name: "", icon: 'logout', text: 'Logout' },
 ]
 const AppDrawerNavigator = createDrawerNavigator();
 
@@ -202,24 +207,29 @@ const CustomUserDrawerContent = props => {
         <View style={{
             width: width / 1.5,
             height: height,
-            backgroundColor: 'red',
-            borderTopRightRadius: 10,
-            borderBottomEndRadius: 50,
             position: 'relative'
         }}>
             <View style={styles.drawerimg}>
                 <MaterialIcon size={30} color='blue' style={styles.icon} name='settings' />
-                <Image style={styles.dr_profile}
-                    source={{ uri: url }} />
-                <Text style={{ fontWeight: 'bold', }}>Alex abramahov</Text>
-                <Text >player</Text>
+                <TouchableOpacity>
+                    <Image style={styles.dr_profile}
+                        source={{ uri: url }} />
+                </TouchableOpacity>
+                <View style={{ display: 'flex', flexDirection: 'row',alignItems:'center' }}>
+                    <Text style={{ fontWeight: 'bold', color: 'white', fontSize: 20 }}>Alex abramahov</Text>
+                    <MaterialIcon name='circle'style={{marginLeft:5}} color='lightgreen' size={20} />
+                </View>
+                <Text style={{ color: 'white' }}>player</Text>
             </View>
             <View style={{ marginTop: height * 0.05 }}>
                 {drawer_arr.map((v, i) => {
                     return (<TouchableOpacity key={i} onPress={() => {
                         props.navigation.navigate(v.name);
                         props.navigation.closeDrawer()
-                    }} style={styles.draweritem}>
+                    }} style={{
+                        ...styles.draweritem,
+                        marginTop: i === 4 ? height * 0.15 : 0
+                    }}>
                         <MaterialIcon color='white' size={30}
                             name={v.icon} /><Text style={{
                                 color: 'white',
@@ -234,9 +244,8 @@ const CustomUserDrawerContent = props => {
 
 const DrawerNavigator = prop => {
     return (
-        <AppDrawerNavigator.Navigator drawerType="slide" 
+        <AppDrawerNavigator.Navigator drawerType="slide"
             // openByDefault
-            // sceneContainerStyle={{backgroundColor:'orange',width:width/1.4}}
             drawerStyle={styles.drawerStyle}
             drawerContent={props => { return (<CustomUserDrawerContent {...props} />) }}>
             <AppDrawerNavigator.Screen
