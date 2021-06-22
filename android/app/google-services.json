@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "679472623547",
+    "firebase_url": "https://reactpwa-2a98d-default-rtdb.firebaseio.com",
+    "project_id": "reactpwa-2a98d",
+    "storage_bucket": "reactpwa-2a98d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:679472623547:android:02c9bbf2323609b8c91e9e",
+        "android_client_info": {
+          "package_name": "com.awesomeproject"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "679472623547-fqi0vasact0j742sk7fh0u1b7kdh7fhf.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDuUmmlR0XlGMmI2XlkT4bccWSziUOoWn4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "679472623547-fqi0vasact0j742sk7fh0u1b7kdh7fhf.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
