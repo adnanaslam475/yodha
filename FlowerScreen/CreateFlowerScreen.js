@@ -32,19 +32,33 @@ const FlowerScreen = ({ navigation }) => {
 
 
     const send = async () => {
+        const num = 99999999999999999999;
         try {
+            const topicobj = { topic, id: Math.floor(Math.random() * num) }
+            const ideaobj = { idea, id: Math.floor(Math.random() * num) }
+            const alternativeobj = { alternative, id: Math.floor(Math.random() * num) }
+            const judgementobj = { judgement, id: Math.floor(Math.random() * num) }
+            const counterIdeaobj = { counterIdea, id: Math.floor(Math.random() * num) }
+            console.log(ideaobj)
             const res = await app.database().ref('flowers').push({
-                topic, idea, judgement, alternative, counterIdea
+                topicobj,
+                ideaobj,
+                judgementobj,
+                alternativeobj,
+                counterIdeaobj
             })
             res && navigation.navigate('feeds')
         } catch (error) {
-
+            Alert.alert(
+                "Network Error!",
+                'Try Again',
+                [
+                    { text: "OK", onPress: () => console.log("OK Pressed") }
+                ]
+            );
             console.log(error)
         }
     }
-
-    // console.log(topic, 'i=>', idea, 'cou-->', counterIdea, 'ju-->', 
-    // judgement, 'al==>', alternative,arr.length);
 
 
     return (
@@ -91,6 +105,7 @@ const FlowerScreen = ({ navigation }) => {
             }} onPress={() => setshow({ show: true, name: 'topic' })}>
                 <Text>{topic}</Text>
             </TouchableOpacity>
+
             {arr.includes('idea') && <TouchableOpacity style={{
                 ...styles.main,
                 backgroundColor: 'red',
@@ -98,6 +113,7 @@ const FlowerScreen = ({ navigation }) => {
             }} onPress={() => setshow({ show: true, name: 'idea' })}>
                 <Text>{idea}</Text>
             </TouchableOpacity>}
+
             {arr.includes('counter') && <TouchableOpacity style={{
                 ...styles.main,
                 backgroundColor: 'lightblue',
@@ -105,6 +121,7 @@ const FlowerScreen = ({ navigation }) => {
             }} onPress={() => setshow({ show: true, name: 'counter' })}>
                 <Text>{counterIdea}</Text>
             </TouchableOpacity>}
+
             {arr.includes('judgement') && <TouchableOpacity
                 style={{
                     ...styles.main, backgroundColor: 'orange',

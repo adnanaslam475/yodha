@@ -1,114 +1,89 @@
 import React, { useEffect, useState } from 'react'
-import { View, Text, ScrollView, StyleSheet, Dimensions, TouchableOpacity } from 'react-native'
-import { app } from '../firebaseconfig'
-import ReactNativeZoomableView from '@dudigital/react-native-zoomable-view/src/ReactNativeZoomableView';
+import { View, Text, ActivityIndicator, ScrollView, StyleSheet, Dimensions, TouchableOpacity } from 'react-native'
+import { app } from '../firebaseconfig';
+import Dialog from "react-native-dialog";
+// import ReactNativeZoomableView from 
+// '@dudigital/react-native-zoomable-view/src/ReactNativeZoomableView';
 
 
 
 
 const Flower = ({ navigation, route }) => {
     const [res, setres] = useState({});
+    const [loading, setloading] = useState(true);
+    const [show, setshow] = useState({})
 
     useEffect(() => {
         app.database().ref(`flowers/${route.params.flowerId}`).get()
             .then(res => {
                 setres(res.toJSON())
-                console.log(res.toJSON())
+                setloading(false)
             }).catch(e => {
-                console.log(e);
+                Alert.alert(
+                    "Network Error!",
+                    'Try Again',
+                    [
+                        { text: "OK", onPress: () => console.log("OK Pressed") }
+                    ]
+                )
+                setloading(false)
             })
     }, [])
 
 
-    const Zoom = ({ counterIdea, topic, judgement, alternative,press }) => {
-        return <ReactNativeZoomableView
-            maxZoom={1.9}
-            minZoom={1}
-            zoomStep={0.9}
-            initialZoom={1}
-            bindToBorders={true}
-            style={{
-                ...styles.main,
-                backgroundColor: 'lightblue',
-                marginTop: height / 10
-            }} >
-            <TouchableOpacity onPress={press}>
-                <Text>{counterIdea || topic || judgement || alternative}</Text>
-            </TouchableOpacity>
-        </ReactNativeZoomableView>
-    }
 
     return (
         <View style={{
-            paddingTop: 20, width: width,
-            height: height
+            paddingTop: 20, width: width, height: height
         }}>
-            <TouchableOpacity style={{
-                ...styles.main,
-                marginTop: height / 3
-            }}>
-                <Text>{res.topic}</Text>
-            </TouchableOpacity>
-            <ReactNativeZoomableView
-                maxZoom={1.9}
-                minZoom={1}
-                zoomStep={0.9}
-                initialZoom={1}
-                bindToBorders={true}
-                style={{
+            <Dialog.Container visible={show.show}>
+                <Dialog.Title children='ssssss'>{show.name}</Dialog.Title>
+                <Dialog.Description style={{ borderColor: 'black' }} >
+                    <Dialog.Input style={{
+                        width: width * 0.5,
+                    }} onChangeText={t => ''} />
+                </Dialog.Description>
+                <Dialog.Button label='ok' onPress={() => setshow({})} />
+            </Dialog.Container>
+            {loading ? <ActivityIndicator color='red' size='large'
+                style={{ marginTop: height / 3 }} /> : <View>
+                <TouchableOpacity style={{
+                    ...styles.main,
+                    marginTop: height / 3
+                }}>
+                    <Text>{res.topicobj.topic}</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={{
                     ...styles.main,
                     backgroundColor: 'lightblue',
                     marginTop: height / 10
-                }} >
-                <TouchableOpacity>
-                    <Text>{res.counterIdea}</Text>
+                }} onPress={() => navigation.navigate('arguments', { id: res.counterIdeaobj.id })} >
+                    <Text>{res.counterIdeaobj?.counterIdea}</Text>
                 </TouchableOpacity>
-            </ReactNativeZoomableView>
-            <ReactNativeZoomableView
-                maxZoom={1.9}
-                minZoom={1}
-                zoomStep={0.9}
-                initialZoom={1}
-                bindToBorders={true}
-                style={{
-                    ...styles.main, backgroundColor: 'orange',
+                <TouchableOpacity style={{
+                    ...styles.main,
+                    backgroundColor: 'red',
+                    top: height / 1.9
+                }} onPress={() => navigation.navigate('arguments', { id: res.ideaobj.id })} >
+                    <Text>{res.ideaobj?.idea}</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={{
+                    ...styles.main,
+                    backgroundColor: 'lightblue',
+                    marginTop: height / 10,
+                }} onPress={() => navigation.navigate('arguments', { id: res.judgementobj.id })} >
+                    <Text>{res.judgementobj?.judgement}</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity style={{
+                    ...styles.main,
+                    backgroundColor: 'orange',
                     right: height * 0.02,
-                    top: height * 0.28
-                }}>
-                <TouchableOpacity>
-                    <Text>{res.judgement}</Text>
+                    bottom: height * 0.5
+                }} onPress={() => navigation.navigate('arguments', { id: res.alternativeobj.id })} >
+                    <Text>{res.alternativeobj?.alternative}</Text>
                 </TouchableOpacity>
-            </ReactNativeZoomableView>
-            <ReactNativeZoomableView
-                maxZoom={1.9}
-                minZoom={1}
-                zoomStep={0.9}
-                initialZoom={1}
-                bindToBorders={true}
-                style={{
-                    ...styles.main, backgroundColor: 'blue',
-                    // left: height * 0.02,
-                    // top: height * 0.28
-                }}>
-                <TouchableOpacity>
-                    <Text>{res.alternative}</Text>
-                </TouchableOpacity>
-            </ReactNativeZoomableView>
-            <ReactNativeZoomableView
-                maxZoom={1.9}
-                minZoom={1}
-                zoomStep={0.9}
-                initialZoom={1}
-                bindToBorders={true}
-                style={{
-                    ...styles.main, backgroundColor: 'purple',
-                    // left: height * 0.02,
-                    // top: height * 0.28
-                }}>
-                <TouchableOpacity>
-                    <Text>{res.alternative}</Text>
-                </TouchableOpacity>
-            </ReactNativeZoomableView>
+            </View>}
         </View>
     )
 }
@@ -128,4 +103,5 @@ const styles = StyleSheet.create({
         position: 'absolute'
     }
 })
-export default Flower
+
+export default Flower;
