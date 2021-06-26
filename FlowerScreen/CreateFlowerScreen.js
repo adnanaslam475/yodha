@@ -22,11 +22,12 @@ const FlowerScreen = ({ navigation }) => {
 
     useEffect(() => {
         const fun = async () => {
-            setEmail(await AsyncStorage.getItem('auth'))
+            const user_email = await AsyncStorage.getItem('auth')
+            setEmail(user_email);
         }
         fun();
     }, [])
-
+    
 
 
 
@@ -39,7 +40,6 @@ const FlowerScreen = ({ navigation }) => {
             const alternativeobj = { alternative, id: Math.floor(Math.random() * num) }
             const judgementobj = { judgement, id: Math.floor(Math.random() * num) }
             const counterIdeaobj = { counterIdea, id: Math.floor(Math.random() * num) }
-            console.log(ideaobj)
             const res = await app.database().ref('flowers').push({
                 topicobj,
                 ideaobj,
@@ -68,7 +68,7 @@ const FlowerScreen = ({ navigation }) => {
             padding: 20
         }}>
             <Dialog.Container visible={show.show}>
-                <Dialog.Title children='ssssss'>{show.name}</Dialog.Title>
+                <Dialog.Title children='ssssss'>{show.name || 'a'}</Dialog.Title>
                 <Dialog.Description style={{ borderColor: 'black' }}>
                     <Dialog.Input style={{
                         width: width * 0.5,

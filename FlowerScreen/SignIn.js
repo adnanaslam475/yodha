@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import {
     View, Text, TouchableOpacity, StyleSheet,
-    Button, TextInput, Dimensions,
+    Button, TextInput, Dimensions, ActivityIndicator,
 } from 'react-native';
 import { app } from '../firebaseconfig';
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -10,12 +10,13 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 const AdminSignIn = ({ navigation }) => {
     const [email, setEmail] = useState('');
     const [pass, setPass] = useState('');
-    const [error, setError] = useState('')
+    const [error, setError] = useState('');
+    const [isLoading, setIsloading] = useState(false)
 
 
     useEffect(() => {
         if (AsyncStorage.getItem('auth') === null) {
-            
+
         }
         else {
             // navigation.navigate('flower')
@@ -23,23 +24,29 @@ const AdminSignIn = ({ navigation }) => {
     }, [])
 
     const send = async () => {
+        setIsloading(true)
         try {
-            console.log(email,pass)
-            const auth = await app.auth().createUserWithEmailAndPassword(email, pass)
-            console.log(auth);
-            const res = await AsyncStorage.setItem('auth', lang);
-            console.log(JSON.stringify(res.value));
-            navigation.navigate('flower')
+            const auth = await app.auth().signInWithEmailAndPassword(email, pass)
+            await AsyncStorage.setItem('auth', auth.user.email);
+            setIsloading(false);
+
+            // navigation.navigate('createflower');
+            navigation.reset({
+                index: 0,
+                routes: [{ name: 'createflower' }],
+            });
         }
         catch (error) {
-            setError('Network Error')
+            console.log('err==>', error)
+            setError(error.toString().split(':')[1]);
+            setIsloading(false)
         }
     }
 
 
     return (
         <View style={styles.main}>
-             <TouchableOpacity style={{ marginTop: 15, }} onPress={() => navigation.navigate('signup')} >
+            <TouchableOpacity style={{ marginTop: 15, }} onPress={() => navigation.navigate('signup')} >
                 <Icon name='arrow-back' size={30} color='black' />
             </TouchableOpacity>
             <Text style={{
@@ -51,15 +58,16 @@ const AdminSignIn = ({ navigation }) => {
             <Text style={{ margin: 5 }}>email address</Text>
             <TextInput placeholder='your name or email id'
                 style={styles.input} keyboardType='email-address'
-                onChangeText={t => setText(t)} value={email} />
+                onChangeText={t => setEmail(t)} value={email} />
             <Text style={{ margin: 5 }}>password</Text>
             <TextInput placeholder='Type our password' keyboardType='default'
                 onChangeText={t => setPass(t)} value={pass}
                 style={styles.input} />
-
-            <TouchableOpacity style={styles.button} onPress={send} >
-                <Text style={{ alignSelf: 'center', color: 'white', margin: 10 }} > Sign in</Text>
-            </TouchableOpacity>
+            {error ? <Text style={{ color: 'red', marginTop: 5 }}>{error}</Text> : null}
+            {isLoading ? <ActivityIndicator color='blue' style={{ marginTop: 5 }} size='large' /> :
+                <TouchableOpacity style={styles.button} onPress={send} >
+                    <Text style={{ alignSelf: 'center', color: 'white', margin: 10 }} > Sign in</Text>
+                </TouchableOpacity>}
             <Text style={{ alignSelf: 'flex-end', margin: 10 }}>
                 dont have an account?
                 <Text style={{ color: 'blue' }} onPress={() => navigation.navigate('signin')} > Sign Up</Text>

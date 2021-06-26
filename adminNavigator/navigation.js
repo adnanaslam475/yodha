@@ -258,7 +258,7 @@ const DrawerNavigator = prop => {
                 }}
             />
         </AppDrawerNavigator.Navigator>
-    );
+    )
 };
 
 const TestNavigator = () => {
@@ -269,4 +269,3 @@ const TestNavigator = () => {
     );
 };
 export default TestNavigator;
-

@@ -9,6 +9,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import Feeds from '../FlowerScreen/Feeds';
 import Flower from '../FlowerScreen/Flower';
 import Arguments from '../FlowerScreen/Arguments';
+import ArgumentComments from '../FlowerScreen/Arguments_Comments';
 
 
 
@@ -26,9 +27,8 @@ const DashboardScreenStack = () => {
                 name="signin"
                 options={{ headerShown: false }}
                 component={SignIn}
-            /> */}
-
-            {/* <DashboardScreenStackNavigator.Screen
+            />
+            <DashboardScreenStackNavigator.Screen
                 name="createflower"
                 options={{
                     headerStyle: { backgroundColor: 'pink' },
@@ -67,7 +67,7 @@ const DashboardScreenStack = () => {
                 options={({ route, navigation }) => {
                     return ({
                         headerStyle: { backgroundColor: 'pink' },
-                        headerTitle: `${route.params.flowerId}`,
+                        headerTitle: `${route.params.name}`,
                         headerTitleAlign: 'center',
                         headerBackTitleStyle: {
                             fontStyle: 'italic',
@@ -95,7 +95,6 @@ const DashboardScreenStack = () => {
                         },
                         headerTitleStyle: {
                             color: 'white',
-                            letterSpacing: 3,
                             fontWeight: 'bold'
                         },
                         headerRight: () => <Ionicons
@@ -109,6 +108,25 @@ const DashboardScreenStack = () => {
                     })
                 }}
                 component={Arguments}
+            />
+            <DashboardScreenStackNavigator.Screen
+                name="comments"
+                options={({ route, navigation }) => {
+                    return ({
+                        headerStyle: { backgroundColor: 'pink' },
+                        headerTitle: 'comments',
+                        headerTitleAlign: 'center',
+                        headerBackTitleStyle: {
+                            fontStyle: 'italic',
+                        },
+                        headerTitleStyle: {
+                            color: 'white',
+                            letterSpacing: 3,
+                            fontWeight: 'bold'
+                        }
+                    })
+                }}
+                component={ArgumentComments}
             />
         </DashboardScreenStackNavigator.Navigator>
     );

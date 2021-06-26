@@ -2,8 +2,6 @@ import React, { useEffect, useState } from 'react'
 import { View, Text, ActivityIndicator, ScrollView, StyleSheet, Dimensions, TouchableOpacity } from 'react-native'
 import { app } from '../firebaseconfig';
 import Dialog from "react-native-dialog";
-// import ReactNativeZoomableView from 
-// '@dudigital/react-native-zoomable-view/src/ReactNativeZoomableView';
 
 
 
@@ -37,7 +35,7 @@ const Flower = ({ navigation, route }) => {
             paddingTop: 20, width: width, height: height
         }}>
             <Dialog.Container visible={show.show}>
-                <Dialog.Title children='ssssss'>{show.name}</Dialog.Title>
+                <Dialog.Title children='ssssss'>{show.name||'a'}</Dialog.Title>
                 <Dialog.Description style={{ borderColor: 'black' }} >
                     <Dialog.Input style={{
                         width: width * 0.5,
@@ -49,14 +47,17 @@ const Flower = ({ navigation, route }) => {
                 style={{ marginTop: height / 3 }} /> : <View>
                 <TouchableOpacity style={{
                     ...styles.main,
+                    backgroundColor:'pink',
                     marginTop: height / 3
+
                 }}>
                     <Text>{res.topicobj.topic}</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={{
                     ...styles.main,
                     backgroundColor: 'lightblue',
-                    marginTop: height / 10
+                    marginTop: height / 10,
+                    top:20,
                 }} onPress={() => navigation.navigate('arguments', { id: res.counterIdeaobj.id })} >
                     <Text>{res.counterIdeaobj?.counterIdea}</Text>
                 </TouchableOpacity>
@@ -69,8 +70,10 @@ const Flower = ({ navigation, route }) => {
                 </TouchableOpacity>
                 <TouchableOpacity style={{
                     ...styles.main,
-                    backgroundColor: 'lightblue',
+                    backgroundColor: 'yellow',
                     marginTop: height / 10,
+                    top: height / 4.3,
+                    left:20,
                 }} onPress={() => navigation.navigate('arguments', { id: res.judgementobj.id })} >
                     <Text>{res.judgementobj?.judgement}</Text>
                 </TouchableOpacity>
@@ -79,7 +82,7 @@ const Flower = ({ navigation, route }) => {
                     ...styles.main,
                     backgroundColor: 'orange',
                     right: height * 0.02,
-                    bottom: height * 0.5
+                    top: height * 0.34
                 }} onPress={() => navigation.navigate('arguments', { id: res.alternativeobj.id })} >
                     <Text>{res.alternativeobj?.alternative}</Text>
                 </TouchableOpacity>
@@ -95,7 +98,6 @@ const styles = StyleSheet.create({
         borderRadius: width * 0.3,
         height: height * 0.16,
         width: width * 0.27,
-        backgroundColor: 'pink',
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',

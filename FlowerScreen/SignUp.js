@@ -21,7 +21,7 @@ const AdminSignUp = ({ navigation }) => {
             const auth = await app.auth().createUserWithEmailAndPassword(email, pass)
             await AsyncStorage.setItem('auth', auth.user.email);
             setIsloading(false);
-            navigation.navigate('flower');
+            navigation.navigate('createflower');
         }
         catch (error) {
             console.log(error)
@@ -48,8 +48,8 @@ const AdminSignUp = ({ navigation }) => {
             <TextInput placeholder='Type our password' keyboardType='default'
                 onChangeText={t => setPass(t)} value={pass}
                 style={styles.input} />
-            {error ? <Text style={{ color: 'red' }}>{error}</Text> : null}
-            {isLoading ? <ActivityIndicator color='blue' size='large' /> :
+            {error ? <Text style={{ color: 'red', marginTop: 5 }}>{error}</Text> : null}
+            {isLoading ? <ActivityIndicator color='blue' style={{ marginTop: 5 }} size='large' /> :
                 <TouchableOpacity style={styles.button} onPress={send} >
                     <Text style={{ alignSelf: 'center', color: 'white', margin: 10 }} > Sign in</Text>
                 </TouchableOpacity>}

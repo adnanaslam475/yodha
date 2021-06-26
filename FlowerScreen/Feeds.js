@@ -11,17 +11,15 @@ const Feeds = ({ navigation }) => {
 
     useEffect(() => {
         const push = []
-        let id = []
         app.database().ref('flowers').get().then(res => {
-            id = Object.keys(res.toJSON())
             res.forEach(el => {
                 push.push(el.toJSON())
             })
-            setFlowerIds(id)
+            setFlowerIds(Object.keys(res.toJSON()))
             setArr(push);
             setloading(false)
         }).catch(e => {
-            console.log(e);
+            console.log('22-->', e);
             setloading(false)
         })
     }, [])
@@ -42,8 +40,10 @@ const Feeds = ({ navigation }) => {
                                 padding: 10,
                                 alignSelf: 'center', backgroundColor: 'lightgray',
                                 width: width * 0.9, borderRadius: 10, margin: 5,
-                            }} onPress={() => navigation.navigate('flower', {
+                            }}
+                            onPress={() => navigation.navigate('flower', {
                                 flowerId: id[0],
+                                name: v.topicobj.topic,
                                 completed: true,
                             })}>
                             <Text style={{
