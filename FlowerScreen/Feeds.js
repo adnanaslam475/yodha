@@ -19,7 +19,7 @@ const Feeds = ({ navigation }) => {
             setArr(push);
             setloading(false)
         }).catch(e => {
-            console.log('22-->', e);
+            console.log('feeds errr-->', e);
             setloading(false)
         })
     }, [])

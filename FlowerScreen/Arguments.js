@@ -7,25 +7,28 @@ import {
 import Dialog from "react-native-dialog";
 import { app } from '../firebaseconfig';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-// import Anticons from 'react-native-vector-icons/AntDesign';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Rating } from 'react-native-ratings'
 
 
 const Arguments = ({ navigation, route }) => {
+    // var arrs = [];
     const [loading, setloading] = useState(true);
     const argumentref = app.database().ref('arguments')
     const [open, setopen] = useState(false)
     const [text, setText] = useState('');
-    const [likesarr, setlikesarr] = useState([]);
+    const [likesarr, set_likesarr] = useState([]);
+    const [unlikesarr, set_unlikesarr] = useState([]);
 
+    const [likeArrayIds, setlikeArrayIds] = useState(null)
+    const [unlikeArrayIds, setUnlikeArrayIds] = useState(null)
 
-
-    const [argumentskeys, setArgumentsKeys] = useState(null);
+    const [error, seterror] = useState('')
     const [argumentsarr, setarguments] = useState([]);
     const [fullText, setFullText] = useState('');
     const [user_email, set_user_email] = useState('')
     const [like, setlike] = useState('');
+    const [likerun, setlikerun] = useState(true)
 
     useEffect(() => {
         route.params.open == true && setopen(true)
@@ -33,86 +36,114 @@ const Arguments = ({ navigation, route }) => {
 
     useEffect(() => {
         AsyncStorage.getItem('auth').then(email => set_user_email(email)).catch(e => {
-            Alert.alert(
-                "Error!",
-                'Login Session expired',
-                [
-                    { text: "OK" }
-                ]
-            )
+            Alert.alert("Error!", [{ text: "OK" }])
         })
         argumentref.orderByChild('circleid')
             .equalTo(`${route.params.id}`).get().then(res => {
                 const arr = [];
-                setArgumentsKeys(Object.keys(res.toJSON()))
+                const likesarr_Ids = []
+                let likesarray = []
+                const unlikesarr_Ids = []
+                let unlikesarray = []
                 res.forEach(el => {
                     arr.push(el.toJSON())
+                    if (el.toJSON().likes !== undefined) {
+                        const destructkey = []
+                        const destructval = []
+                        Object.keys(el.toJSON().likes).length == 1 ?
+                            likesarr_Ids.push(Object.keys(el.toJSON().likes)[0]) :
+                            Object.keys(el.toJSON().likes).forEach(ele => destructkey.push(ele))
+                        likesarr_Ids.push(...destructkey)
+
+                        Object.values(el.toJSON().likes).length == 1 ?
+                            likesarray.push(Object.values(el.toJSON().likes)[0]) :
+                            Object.values(el.toJSON().likes).forEach(ele => destructval.push(ele))
+                        likesarray.push(...destructval)
+                    }
+                    if (el.toJSON().unlikes !== undefined) {
+                        const destructkey = []
+                        const destructval = [];
+                        Object.keys(el.toJSON().unlikes).length == 1 ?
+                            unlikesarr_Ids.push(Object.keys(el.toJSON().unlikes)[0]) :
+                            Object.keys(el.toJSON().unlikes).forEach(ele => destructkey.push(ele))
+                        unlikesarr_Ids.push(...destructkey);
+
+                        Object.values(el.toJSON().unlikes).length == 1 ?
+                            unlikesarray.push(Object.values(el.toJSON().unlikes)[0]) :
+                            Object.values(el.toJSON().unlikes).forEach(ele => destructval.push(ele))
+                        unlikesarray.push(...destructval)
+                    }
                 })
+                //for pushing argument id in argument object
                 arr.forEach((v, i) => {
                     arr[i].argumentId = Object.keys(res.toJSON()).filter((el, idx) => idx === i)[0]
                 })
-
-
-                arr.forEach((arg_id, i) => {
-                    app.database().ref(`likes/${arg_id.argumentId}`).get()
-                        .then(response => {
-                            let arrs = []
-                            response.forEach(elemnt => {
-                                // console.log(elemnt)
-
-                                arr[i].likes = arrs.concat(elemnt)
-                            })
-                            console.log('63==>', arr)
-                        }).catch(err => {
-                            console.log('err 54', err)
-                        })
-                })
+                setlikeArrayIds(likesarr_Ids);
+                setUnlikeArrayIds(unlikesarr_Ids)
+                set_likesarr(likesarray);
+                set_unlikesarr(unlikesarray)
                 setarguments(arr);
+                setlikerun(!likerun)
                 setloading(false)
             }).catch(e => {
-                setloading(false)
+                setloading(false);
+                Alert.alert("Network Error!", 'Try Again', { text: "OK" })
                 console.log('errr33==>', e)
             })
-    }, [])
+    }, [like])
 
 
-
+    useEffect(() => {
+        if (likeArrayIds || unlikeArrayIds) {
+            likesarr.forEach((el, i) => {
+                likesarr[i].likeId = likeArrayIds.filter((el, idx) => idx === i)[0]
+            });
+            unlikesarr.forEach((v, i) => {
+                unlikesarr[i].unlikeId = unlikeArrayIds.filter((el, idx) => idx === i)[0]
+            })
+        }
+    }, [likerun])
 
     const send = async () => {
         setloading(true)
         try {
             const res = argumentref.push({
                 circleid: route.params.id.toString(),
-                text
+                text,
+                user_email
             })
-            setloading(true)
-
+            setloading(true);
             setopen(false)
         } catch (error) {
-            Alert.alert(
-                "Network Error!",
-                'Try Again',
-                [
-                    { text: "OK" }
-                ]
-            )
+            Alert.alert("Network Error!", 'Try Again', { text: "OK" })
             setopen(false)
         }
     }
 
-    const likeHandler = async (argumentId, type) => {
+    const likeHandler = async (argumentId, type, likeId, unlikeId) => {
+        console.log(argumentId, type, likeId, unlikeId)
         try {
-            const res = await app.database().ref(`likes/${argumentId}`)
-                .push({
-                    type,
-                    user_email
-                })
-            setlike(like + 1)
+            const ref = app.database().ref(`arguments/${argumentId}`)
+            if (likeId === undefined && unlikeId === undefined) {
+                await ref.child(`${type === 1 ? 'likes' : 'unlikes'}`).push({ argumentId, user_email })
+            }
+            else if (likeId && unlikeId === undefined) {
+                await ref.child(`likes/${likeId}`).remove()
+                if (type === 0) {
+                    await ref.child('unlikes').push({ argumentId, user_email })
+                }
+            }
+            else if (unlikeId && likeId === undefined) {
+                await ref.child(`unlikes/${unlikeId}`).remove()
+                if (type === 1) {
+                    await ref.child('likes').push({ argumentId, user_email })
+                }
+            }
+            setlike(!like);
         } catch (error) {
+            setlike(!like)
         }
     }
-
-
 
     return (
         <View style={{ paddingTop: 10 }}>
@@ -129,26 +160,35 @@ const Arguments = ({ navigation, route }) => {
                 style={{ marginTop: height / 2.5 }} /> : <View >{argumentsarr.length == 0 ?
                     <Text style={styles.txt}>No arguments yet To show</Text> :
                     argumentsarr.map((v, i) => {
+                        const likefilt = likesarr.filter((val, idx) => val.argumentId === v.argumentId)
+                        const unlikefilt = unlikesarr.filter((val, idx) => val.argumentId === v.argumentId);
+                        const mylike = likefilt.find(vl => vl.user_email === user_email &&
+                            vl.argumentId === v.argumentId)
+                        const myunlike = unlikefilt.find(vl => vl.user_email === user_email &&
+                            vl.argumentId === v.argumentId)
                         return <TouchableOpacity key={i} style={styles.touch}
-                            onPress={() => ''}>
-                            {/* navigation.navigate('comments', { argumentId: v.argumentId }) */}
-                            <Text>{v?.text == fullText ? fullText : v?.text?.substring(0, 144)}<Text style={{ color: 'blue' }}
-                                onPress={() => fullText === '' ? setFullText(v.text) : setFullText('')} >
-                                {fullText === v?.text ? ' show less' : ' show more'}</Text>
+                            onPress={() => navigation.navigate('comments', { argumentId: v.argumentId })}>
+                            <Text>{v.text == fullText ? fullText : v.text.substring(0, 144)}
+                                <Text style={{ color: 'blue' }}
+                                    onPress={() => fullText === '' ? setFullText(v.text) : setFullText('')} >
+                                    {fullText === v.text ? ' show less' : ' show more'}</Text>
                             </Text>
                             <View style={styles.like}>
-                                <Ionicons size={30} onPress={() => likeHandler(v.argumentId, 1)}
-                                    name='thumbs-up-outline' color='blue' />
+                                <Ionicons size={30} onPress={() => likeHandler(v.argumentId, 1, mylike?.likeId, myunlike?.unlikeId)}
+                                    name={mylike ? 'thumbs-up-sharp' : 'thumbs-up-outline'} color='blue' />
                                 <TouchableOpacity>
-                                    <Text style={{ color: 'blue' }}>{''} likes</Text>
+                                    <Text style={{ color: 'blue' }}>{likefilt.length}</Text>
                                 </TouchableOpacity>
-                                <Ionicons size={30} name='thumbs-down-outline' onPress={() => likeHandler(v.argumentId, 0)} color='blue' />
+                                <Ionicons size={30} name={myunlike ? 'thumbs-down-sharp' : 'thumbs-down-outline'}
+                                    onPress={() => likeHandler(v.argumentId, 0, mylike?.likeId, myunlike?.unlikeId)} color='blue' />
                                 <TouchableOpacity>
-                                    {/* thumbs-up-sharp */}
-                                    <Text style={{ color: 'blue' }}>{''} Unlikes</Text>
+                                    <Text style={{ color: 'blue' }}>{unlikefilt.length}</Text>
                                 </TouchableOpacity>
+                                <Rating style={{
+                                    position: 'absolute',
+                                    right: 0
+                                }} imageSize={height * 0.04} />
                             </View>
-                            <Rating style={{}} imageSize={height * 0.05} />
                         </TouchableOpacity>
                     })}
             </View>}
@@ -161,7 +201,9 @@ const styles = StyleSheet.create({
     like: {
         display: 'flex', flexDirection: 'row',
         alignSelf: 'flex-start', alignItems: 'center',
-        zIndex: 5
+        zIndex: 5,
+        position: 'relative',
+        width: width * 0.8
     },
     touch: {
 

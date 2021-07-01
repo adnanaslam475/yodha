@@ -21,13 +21,16 @@ const FlowerScreen = ({ navigation }) => {
     const [isLoading, setIsloading] = useState(false);
 
     useEffect(() => {
+        console.log('klkl')
         const fun = async () => {
             const user_email = await AsyncStorage.getItem('auth')
             setEmail(user_email);
+            console.log(user_email)
+
         }
         fun();
     }, [])
-    
+
 
 
 
@@ -40,6 +43,7 @@ const FlowerScreen = ({ navigation }) => {
             const alternativeobj = { alternative, id: Math.floor(Math.random() * num) }
             const judgementobj = { judgement, id: Math.floor(Math.random() * num) }
             const counterIdeaobj = { counterIdea, id: Math.floor(Math.random() * num) }
+            console.log(ideaobj)
             const res = await app.database().ref('flowers').push({
                 topicobj,
                 ideaobj,
