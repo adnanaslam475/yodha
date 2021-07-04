@@ -1,17 +1,19 @@
 import React, { useEffect, useState } from 'react'
 import {
     Text, View, StyleSheet, ActivityIndicator,
-    Dimensions, TouchableOpacity, Alert, TextInput
+    Dimensions, TouchableOpacity, Alert, TextInput,
+    Animated, Easing
 } from 'react-native';
 import Dialog from "react-native-dialog";
+import Card from './Card';
 import { app } from '../firebaseconfig';
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import Gestures from 'react-native-easy-gestures';
+// import Gestures from 'react-native-easy-gestures';
 
 
 
 const FlowerScreen = ({ navigation }) => {
-    const [arr, setArr] = useState([]);
+    const [arr, setArr] = useState(['alternative']);
     const [email, setEmail] = useState('');
     const [topic, setTopic] = useState('')
     const [idea, setIdea] = useState('');
@@ -20,6 +22,7 @@ const FlowerScreen = ({ navigation }) => {
     const [show, setshow] = useState({});
     const [alternative, setAlternative] = useState('')
     const [isLoading, setIsloading] = useState(false);
+    
 
     useEffect(() => {
         const fun = async () => {
@@ -41,8 +44,6 @@ const FlowerScreen = ({ navigation }) => {
             const alternativeobj = { alternative, id: Math.floor(Math.random() * num) }
             const judgementobj = { judgement, id: Math.floor(Math.random() * num) }
             const counterIdeaobj = { counterIdea, id: Math.floor(Math.random() * num) }
-
-
             const res = await app.database().ref('flowers').push({
                 topicobj,
                 ideaobj,
@@ -52,13 +53,7 @@ const FlowerScreen = ({ navigation }) => {
             })
             res && navigation.navigate('feeds')
         } catch (error) {
-            Alert.alert(
-                "Network Error!",
-                'Try Again',
-                [
-                    { text: "OK", onPress: () => console.log("OK Pressed") }
-                ]
-            )
+            Alert.alert("Network Error!", { text: "OK" })
             console.log(error)
         }
     }
@@ -66,14 +61,10 @@ const FlowerScreen = ({ navigation }) => {
 
     return (
         <View style={{
-            height: height - 80,
             position: 'relative',
-            padding: 20
+            height: height * 0.86,
         }}>
-
-
-            
-            <Dialog.Container visible={show.show}>
+            <Dialog.Container visible={show.show} onBackdropPress={() => setshow({})} >
                 <Dialog.Title children='ssssss'>{show.name || 'a'}</Dialog.Title>
                 <Dialog.Description style={{ borderColor: 'black' }}>
                     <Dialog.Input style={{
@@ -102,49 +93,34 @@ const FlowerScreen = ({ navigation }) => {
                 </Dialog.Description>
                 <Dialog.Button label='ok' onPress={() => setshow({})} />
             </Dialog.Container>
-            <TouchableOpacity style={{
-                ...styles.main,
-                backgroundColor: 'yellow',
-                marginTop: height / 3.5,
-                height: height * 0.23,
-                width: width * 0.4,
-            }} onPress={() => setshow({ show: true, name: 'topic' })}>
-                <Text>{topic}</Text>
-            </TouchableOpacity>
-            {arr.includes('idea') && <TouchableOpacity style={{
-                ...styles.main,
-                backgroundColor: 'red',
-                top: height / 1.9
-            }} onPress={() => setshow({ show: true, name: 'idea' })}>
-                <Text>{idea}</Text>
-            </TouchableOpacity>}
 
-            {arr.includes('counter') && <TouchableOpacity style={{
-                ...styles.main,
-                backgroundColor: 'lightblue',
-                marginTop: height / 10
-            }} onPress={() => setshow({ show: true, name: 'counter' })}>
-                <Text>{counterIdea}</Text>
-            </TouchableOpacity>}
 
-            {arr.includes('judgement') && <TouchableOpacity
-                style={{
-                    ...styles.main, backgroundColor: 'orange',
-                    right: height * 0.02,
-                    top: height * 0.28
-                }} onPress={() => setshow({ show: true, name: 'judgement' })}>
-                <Text>{judgement}</Text>
-            </TouchableOpacity>}
-            {arr.includes('alternative') && <TouchableOpacity style={{
-                ...styles.main, backgroundColor: 'blue',
-                left: height * 0.02,
-                top: height * 0.28
-            }} onPress={() => setshow({
-                show: true,
-                name: 'alternative'
-            })}>
-                <Text>{alternative}</Text>
-            </TouchableOpacity>}
+            <View style={styles.main_circle}>
+                <TouchableOpacity style={{
+                    ...styles.main,
+                    backgroundColor: 'gray',
+                    marginTop: height * 0.17,
+                    height: height * 0.22,
+                    width: width * 0.35,
+                }} onPress={() => setshow({
+                    show: true,
+                    name: 'topic'
+                })}>
+                    <Text>{topic}</Text>
+                </TouchableOpacity>
+
+                {arr.includes('alternative') && <TouchableOpacity style={{
+                    ...styles.main, backgroundColor: 'blue',
+                    left: height * 0.01,
+                    top: height * 0.2
+                }} onPress={() => setshow({
+                    show: true,
+                    name: 'alternative'
+                })}>
+                    <Text>{alternative}</Text>
+                </TouchableOpacity>}
+            </View>
+
             {isLoading ? <ActivityIndicator color='pink' size='large' /> : <TouchableOpacity
                 style={{ ...styles.creat_btn, opacity: arr.length < 4 ? 0.5 : 1 }}
                 onPress={send} disabled={arr.length < 4} >
@@ -158,10 +134,12 @@ const FlowerScreen = ({ navigation }) => {
                             backgroundColor: arr.includes(v) ? 'red' : 'pink',
                             margin: 5,
                             paddingLeft: 15,
+                            paddingRight: 15,
                             paddingTop: 5,
-                            paddingRight: 15, borderRadius: 5,
+                            borderRadius: 5,
                         }}
-                        key={i}><Text>{v}</Text></TouchableOpacity>)}
+                        key={i}><Text>{v}</Text>
+                    </TouchableOpacity>)}
             </View>
         </View >
     )
@@ -179,24 +157,54 @@ const styles = StyleSheet.create({
         height: height * 0.06,
         alignSelf: 'center'
     },
+    main_circle: {
+        backgroundColor: 'lightgray',
+        borderRadius: width,
+        marginTop: height * 0.1,
+        width: width * 0.95,
+        margin: 5,
+        height: height * 0.57
+    },
     bottom: {
         bottom: 0,
         flexDirection: 'row',
         height: height * 0.07,
         position: 'absolute',
-        marginLeft: 5,
         width: width
     },
     main: {
-        borderRadius: width * 0.3,
+        borderRadius: width,
         height: height * 0.16,
         width: width * 0.27,
-        backgroundColor: 'pink',
         display: 'flex',
-        justifyContent: 'center',
         alignItems: 'center',
+        justifyContent: 'center',
         alignSelf: 'center',
         position: 'absolute'
     }
 })
 export default FlowerScreen;
+
+
+// {arr.includes('idea') && <TouchableOpacity style={{
+//     ...styles.main,
+//     backgroundColor: 'red',
+//     top: height * 0.4,
+// }} onPress={() => setshow({ show: true, name: 'idea' })}>
+//     <Text>{idea}</Text>
+// </TouchableOpacity>}
+// {arr.includes('counter') && <TouchableOpacity style={{
+//     ...styles.main,
+//     backgroundColor: 'lightblue',
+//     marginTop: height * 0.001
+// }} onPress={() => setshow({ show: true, name: 'counter' })}>
+//     <Text>{counterIdea ? counterIdea : 'press to add idea'}</Text>
+// </TouchableOpacity>}
+// {arr.includes('judgement') && <TouchableOpacity
+//     style={{
+//         ...styles.main, backgroundColor: 'orange',
+//         right: height * 0.01,
+//         top: height * 0.2
+//     }} onPress={() => setshow({ show: true, name: 'judgement' })}>
+//     <Text>{judgement}</Text>
+// </TouchableOpacity>}

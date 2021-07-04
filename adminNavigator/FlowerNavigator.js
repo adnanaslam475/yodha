@@ -9,6 +9,7 @@ import Feeds from '../FlowerScreen/Feeds';
 import Flower from '../FlowerScreen/Flower';
 import Arguments from '../FlowerScreen/Arguments';
 import ArgumentComments from '../FlowerScreen/Arguments_Comments';
+import Card from '../FlowerScreen/Card';
 
 
 
@@ -19,6 +20,11 @@ const DashboardScreenStack = () => {
 
     return (
         <DashboardScreenStackNavigator.Navigator >
+             <DashboardScreenStackNavigator.Screen
+                name="card"
+                options={{ headerShown: false }}
+                component={Card}
+            />
             {/* <DashboardScreenStackNavigator.Screen
                 name='signup'
                 options={{ headerShown: false }}
