@@ -6,6 +6,7 @@ import {
 import Dialog from "react-native-dialog";
 import { app } from '../firebaseconfig';
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import Gestures from 'react-native-easy-gestures';
 
 
 
@@ -21,12 +22,9 @@ const FlowerScreen = ({ navigation }) => {
     const [isLoading, setIsloading] = useState(false);
 
     useEffect(() => {
-        console.log('klkl')
         const fun = async () => {
             const user_email = await AsyncStorage.getItem('auth')
             setEmail(user_email);
-            console.log(user_email)
-
         }
         fun();
     }, [])
@@ -43,7 +41,8 @@ const FlowerScreen = ({ navigation }) => {
             const alternativeobj = { alternative, id: Math.floor(Math.random() * num) }
             const judgementobj = { judgement, id: Math.floor(Math.random() * num) }
             const counterIdeaobj = { counterIdea, id: Math.floor(Math.random() * num) }
-            console.log(ideaobj)
+
+
             const res = await app.database().ref('flowers').push({
                 topicobj,
                 ideaobj,
@@ -59,7 +58,7 @@ const FlowerScreen = ({ navigation }) => {
                 [
                     { text: "OK", onPress: () => console.log("OK Pressed") }
                 ]
-            );
+            )
             console.log(error)
         }
     }
@@ -71,6 +70,9 @@ const FlowerScreen = ({ navigation }) => {
             position: 'relative',
             padding: 20
         }}>
+
+
+            
             <Dialog.Container visible={show.show}>
                 <Dialog.Title children='ssssss'>{show.name || 'a'}</Dialog.Title>
                 <Dialog.Description style={{ borderColor: 'black' }}>
@@ -109,7 +111,6 @@ const FlowerScreen = ({ navigation }) => {
             }} onPress={() => setshow({ show: true, name: 'topic' })}>
                 <Text>{topic}</Text>
             </TouchableOpacity>
-
             {arr.includes('idea') && <TouchableOpacity style={{
                 ...styles.main,
                 backgroundColor: 'red',

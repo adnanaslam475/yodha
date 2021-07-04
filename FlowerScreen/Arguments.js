@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import {
-    View, TouchableHighlight, TouchableOpacity,
+    View, TouchableOpacity,
     StyleSheet, Text,
     ActivityIndicator, ScrollView, Dimensions, Alert
 } from 'react-native'
@@ -14,20 +14,22 @@ import { Rating } from 'react-native-ratings'
 const Arguments = ({ navigation, route }) => {
     // var arrs = [];
     const [loading, setloading] = useState(true);
+    const [likeIconDisabled, setlikeIconDisabled] = useState(false)
     const argumentref = app.database().ref('arguments')
-    const [open, setopen] = useState(false)
+    const [open, setopen] = useState(false);
+    const [ratingIds, setratingIds] = useState(null)
     const [text, setText] = useState('');
     const [likesarr, set_likesarr] = useState([]);
     const [unlikesarr, set_unlikesarr] = useState([]);
-
+    const [rating, setrating] = useState(0)
     const [likeArrayIds, setlikeArrayIds] = useState(null)
     const [unlikeArrayIds, setUnlikeArrayIds] = useState(null)
 
-    const [error, seterror] = useState('')
     const [argumentsarr, setarguments] = useState([]);
     const [fullText, setFullText] = useState('');
     const [user_email, set_user_email] = useState('')
     const [like, setlike] = useState('');
+    const [ratingpercent, setratingPercent] = useState(0)
     const [likerun, setlikerun] = useState(true)
 
     useEffect(() => {
@@ -42,19 +44,22 @@ const Arguments = ({ navigation, route }) => {
             .equalTo(`${route.params.id}`).get().then(res => {
                 const arr = [];
                 const likesarr_Ids = []
+                const allratingvalues = []
                 let likesarray = []
                 const unlikesarr_Ids = []
                 let unlikesarray = []
+                const ratingkeys = [];
                 res.forEach(el => {
                     arr.push(el.toJSON())
                     if (el.toJSON().likes !== undefined) {
                         const destructkey = []
+
                         const destructval = []
+
                         Object.keys(el.toJSON().likes).length == 1 ?
                             likesarr_Ids.push(Object.keys(el.toJSON().likes)[0]) :
                             Object.keys(el.toJSON().likes).forEach(ele => destructkey.push(ele))
                         likesarr_Ids.push(...destructkey)
-
                         Object.values(el.toJSON().likes).length == 1 ?
                             likesarray.push(Object.values(el.toJSON().likes)[0]) :
                             Object.values(el.toJSON().likes).forEach(ele => destructval.push(ele))
@@ -67,17 +72,24 @@ const Arguments = ({ navigation, route }) => {
                             unlikesarr_Ids.push(Object.keys(el.toJSON().unlikes)[0]) :
                             Object.keys(el.toJSON().unlikes).forEach(ele => destructkey.push(ele))
                         unlikesarr_Ids.push(...destructkey);
-
                         Object.values(el.toJSON().unlikes).length == 1 ?
                             unlikesarray.push(Object.values(el.toJSON().unlikes)[0]) :
                             Object.values(el.toJSON().unlikes).forEach(ele => destructval.push(ele))
                         unlikesarray.push(...destructval)
+                    }
+                    if (el.toJSON().ratings !== undefined) {
+                        ratingkeys.push(Object.keys(el.toJSON().ratings))
+                        Object.values(el.toJSON().ratings).forEach(elemnt => {
+                            allratingvalues.push(parseInt(elemnt.toJSON().rating))
+                        })
                     }
                 })
                 //for pushing argument id in argument object
                 arr.forEach((v, i) => {
                     arr[i].argumentId = Object.keys(res.toJSON()).filter((el, idx) => idx === i)[0]
                 })
+                setratingPercent(allratingvalues);
+                setratingIds(ratingkeys)
                 setlikeArrayIds(likesarr_Ids);
                 setUnlikeArrayIds(unlikesarr_Ids)
                 set_likesarr(likesarray);
@@ -92,6 +104,7 @@ const Arguments = ({ navigation, route }) => {
             })
     }, [like])
 
+    // console.log(rating, ratingIds, ratingpercent)
 
     useEffect(() => {
         if (likeArrayIds || unlikeArrayIds) {
@@ -107,7 +120,7 @@ const Arguments = ({ navigation, route }) => {
     const send = async () => {
         setloading(true)
         try {
-            const res = argumentref.push({
+            await argumentref.push({
                 circleid: route.params.id.toString(),
                 text,
                 user_email
@@ -120,12 +133,25 @@ const Arguments = ({ navigation, route }) => {
         }
     }
 
+    const reviews = async (argumentId) => {
+        // console.log(id, '==>', argumentId)
+        try {
+            await app.database().ref(`arguments/${id}`).child('ratings').push({
+                user_email,
+                argumentId,
+                rating,
+            })
+        } catch (error) {
+            Alert.alert(" Rating Error !!! please try again!", [{ text: "OK" }])
+        }
+    }
     const likeHandler = async (argumentId, type, likeId, unlikeId) => {
-        console.log(argumentId, type, likeId, unlikeId)
+        setlikeIconDisabled(true)
         try {
             const ref = app.database().ref(`arguments/${argumentId}`)
             if (likeId === undefined && unlikeId === undefined) {
                 await ref.child(`${type === 1 ? 'likes' : 'unlikes'}`).push({ argumentId, user_email })
+
             }
             else if (likeId && unlikeId === undefined) {
                 await ref.child(`likes/${likeId}`).remove()
@@ -140,10 +166,17 @@ const Arguments = ({ navigation, route }) => {
                 }
             }
             setlike(!like);
+            setlikeIconDisabled(false)
         } catch (error) {
             setlike(!like)
+            setlikeIconDisabled(false)
         }
     }
+
+
+
+    console.log(likeIconDisabled)
+
 
     return (
         <View style={{ paddingTop: 10 }}>
@@ -167,27 +200,46 @@ const Arguments = ({ navigation, route }) => {
                         const myunlike = unlikefilt.find(vl => vl.user_email === user_email &&
                             vl.argumentId === v.argumentId)
                         return <TouchableOpacity key={i} style={styles.touch}
-                            onPress={() => navigation.navigate('comments', { argumentId: v.argumentId })}>
-                            <Text>{v.text == fullText ? fullText : v.text.substring(0, 144)}
+                            onPress={() => navigation.navigate('comments', { argumentId: v.argumentId })}
+                        >
+                            <Text style={{ textAlign: 'left', color: 'red' }}>{v.text == fullText ? fullText : v.text.substring(0, 144)}
                                 <Text style={{ color: 'blue' }}
                                     onPress={() => fullText === '' ? setFullText(v.text) : setFullText('')} >
                                     {fullText === v.text ? ' show less' : ' show more'}</Text>
                             </Text>
                             <View style={styles.like}>
-                                <Ionicons size={30} onPress={() => likeHandler(v.argumentId, 1, mylike?.likeId, myunlike?.unlikeId)}
-                                    name={mylike ? 'thumbs-up-sharp' : 'thumbs-up-outline'} color='blue' />
-                                <TouchableOpacity>
-                                    <Text style={{ color: 'blue' }}>{likefilt.length}</Text>
+                                <TouchableOpacity onPress={() => likeHandler(v.argumentId, 1, mylike?.likeId, myunlike?.unlikeId)}
+                                    disabled={likeIconDisabled} >
+                                    <Ionicons size={30}
+                                        name={mylike ? 'thumbs-up-sharp' : 'thumbs-up-outline'} color='blue' />
                                 </TouchableOpacity>
-                                <Ionicons size={30} name={myunlike ? 'thumbs-down-sharp' : 'thumbs-down-outline'}
-                                    onPress={() => likeHandler(v.argumentId, 0, mylike?.likeId, myunlike?.unlikeId)} color='blue' />
-                                <TouchableOpacity>
-                                    <Text style={{ color: 'blue' }}>{unlikefilt.length}</Text>
+                                <Text style={styles.likelength}>{likefilt.length}</Text>
+                                <TouchableOpacity onPress={() => likeHandler(v.argumentId, 0, mylike?.likeId,
+                                    myunlike?.unlikeId)}
+                                    disabled={likeIconDisabled}>
+                                    <Ionicons size={30} name={myunlike ? 'thumbs-down-sharp' : 'thumbs-down-outline'}
+                                        color='blue' />
                                 </TouchableOpacity>
+                                <Text style={styles.likelength}>{unlikefilt.length}</Text>
                                 <Rating style={{
                                     position: 'absolute',
-                                    right: 0
-                                }} imageSize={height * 0.04} />
+                                    right: 0,
+                                    top: 5,
+                                }} imageSize={height * 0.04}
+                                    ratingCount={5}
+                                    ratingColor='#0051ff'
+                                    ratingTextColor='#0051ff'
+                                    ratingBackgroundColor='#0051ff'
+                                    minValue={rating}
+                                    startingValue={0}
+                                    onStartRating={t => setrating(t)}
+                                    onSwipeRating={() => console.log('onswipe')}
+                                    onFinishRating={() => {
+                                        reviews(v.argumentId);
+                                        console.log('finsh', rating)
+                                    }}
+                                />
+                                {/* <Text>{eval(ratingpercent.join(',')) / ratingpercent.length}</Text> */}
                             </View>
                         </TouchableOpacity>
                     })}
@@ -203,16 +255,19 @@ const styles = StyleSheet.create({
         alignSelf: 'flex-start', alignItems: 'center',
         zIndex: 5,
         position: 'relative',
-        width: width * 0.8
+        width: width * 0.8,
+        marginTop: 10
+    },
+    likelength: {
+        color: 'blue',
+        margin: 5,
     },
     touch: {
-
         backgroundColor: 'lightgray',
         width: width * 0.9,
         borderRadius: 10,
         display: 'flex',
         alignSelf: 'center',
-        alignItems: 'center',
         padding: height * 0.02
     },
     txt: {

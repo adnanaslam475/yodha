@@ -109,7 +109,7 @@ const DashBoard = ({ navigation }) => {
                         onSnapToItem={i => setSelect(i)}
                     />
                 </View>
-                <View style={{ display: 'flex', borderWidth: 1 }} >
+                <View style={{ display: 'flex', borderWidth: 1 }}>
                     <Text style={{ fontWeight: 'bold', fontSize: 20 }}>Team Gallery</Text>
                     <MaterialIcon name="arrow-right-alt" size={30} color='blue' />
                 </View>

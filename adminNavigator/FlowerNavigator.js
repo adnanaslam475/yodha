@@ -1,5 +1,4 @@
 import React, { } from 'react'
-
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import CreateFlowerScreen from '../FlowerScreen/CreateFlowerScreen';
@@ -14,6 +13,8 @@ import ArgumentComments from '../FlowerScreen/Arguments_Comments';
 
 
 const DashboardScreenStackNavigator = createStackNavigator();
+
+
 const DashboardScreenStack = () => {
 
     return (
@@ -27,7 +28,7 @@ const DashboardScreenStack = () => {
                 name="signin"
                 options={{ headerShown: false }}
                 component={SignIn}
-            />
+            /> */}
             <DashboardScreenStackNavigator.Screen
                 name="createflower"
                 options={{
@@ -44,7 +45,7 @@ const DashboardScreenStack = () => {
                     }
                 }}
                 component={CreateFlowerScreen}
-            /> */}
+            />
 
             <DashboardScreenStackNavigator.Screen
                 name="feeds"
