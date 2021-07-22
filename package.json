@@ -1,0 +1,62 @@
+{
+  "name": "Affirm",
+  "version": "0.0.1",
+  "private": true,
+  "rnpm": {
+    "assets": [
+      "./assets/fonts"
+    ]
+  },
+  "scripts": {
+    "android": "react-native run-android",
+    "ios": "react-native run-ios",
+    "start": "react-native start",
+    "test": "jest",
+    "lint": "eslint ."
+  },
+  "dependencies": {
+    "@react-native-async-storage/async-storage": "^1.15.5",
+    "@react-native-community/audio-toolkit": "^2.0.3",
+    "@react-native-community/datetimepicker": "^3.0.8",
+    "@react-native-community/masked-view": "^0.1.11",
+    "@react-native-community/slider": "^3.0.3",
+    "@react-navigation/bottom-tabs": "^5.11.11",
+    "@react-navigation/drawer": "^5.11.4",
+    "@react-navigation/native": "^5.8.10",
+    "@react-navigation/stack": "^5.12.8",
+    "firebase": "^8.7.1",
+    "lottie-react-native": "^4.0.2",
+    "moment": "^2.29.1",
+    "prop-types": "^15.7.2",
+    "react": "17.0.1",
+    "react-native": "0.64.2",
+    "react-native-audio-recorder-player": "^3.1.0",
+    "react-native-background-timer": "^2.4.1",
+    "react-native-check-box": "^2.1.7",
+    "react-native-fs": "^2.18.0",
+    "react-native-gesture-handler": "^1.10.3",
+    "react-native-push-notification": "^7.4.0",
+    "react-native-reanimated": "^2.2.0",
+    "react-native-safe-area-context": "^3.2.0",
+    "react-native-screens": "^3.4.0",
+    "react-native-sqlite-storage": "^5.0.0",
+    "react-native-vector-icons": "^8.1.0",
+    "react-redux": "^7.2.4",
+    "redux": "^4.1.0",
+    "redux-thunk": "^2.3.0",
+    "rn-fetch-blob": "^0.12.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.14.6",
+    "@babel/runtime": "^7.14.6",
+    "@react-native-community/eslint-config": "^3.0.0",
+    "babel-jest": "^27.0.6",
+    "eslint": "^7.30.0",
+    "jest": "^27.0.6",
+    "metro-react-native-babel-preset": "^0.66.1",
+    "react-test-renderer": "17.0.1"
+  },
+  "jest": {
+    "preset": "react-native"
+  }
+}

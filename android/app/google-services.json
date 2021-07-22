@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "580345375930",
+    "project_id": "rnpushnotifications-6acbf",
+    "storage_bucket": "rnpushnotifications-6acbf.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:580345375930:android:59bda779e36b2e1cb7e683",
+        "android_client_info": {
+          "package_name": "com.affirm"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "580345375930-8q0pqudvipvvrco238ekh9mf51984fb7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBpme20rvO8ofp68zJXpq1hj0a8heJTW88"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "580345375930-8q0pqudvipvvrco238ekh9mf51984fb7.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
