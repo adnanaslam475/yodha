@@ -2,35 +2,41 @@ export const GET_AFFIRMATIONS = 'GET_AFFIRMATIONS';
 export const PUSH_AFFIRMATIONS = 'PUSH_AFFIRMATIONS';
 export const SAVED_SETTINGS = 'SAVED_SETTINGS'
 import { db } from '../screens/Sqlite'
-import * as affirmations from '../screens/dummyAffirmations'
+import * as affirmations from '../screens/dummyAffirmations';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 export const pushallaffirmation = () => {
     return async dispatch => {
-        try {
-            affirmations.Generalaffirmation.forEach(v => {
-                db.transaction(async tx => {
-                    db.transaction(tx => {
-                        tx.executeSql('CREATE TABLE IF NOT EXISTS ' + `${v.name} ` +
-                            '(ID INTEGER PRIMARY KEY AUTOINCREMENT, qoutes null);')
-                    }).then(res => {
-                        console.log('res');
-                        db.transaction(async tx => {
-                            await tx.executeSql(`INSERT INTO ${v.name} (qoutes) VALUES (?)`,
-                                [v.values])
-                        })
-                        dispatch({
-                            type: PUSH_AFFIRMATIONS,
-                            data: v
-                        })
-                    })
-                })
-            })
-        }
-        catch (e) {
-            console.log('errors')
-        }
+        // try {
+        //     affirmations.Generalaffirmation.forEach(v => {
+        //         console.log(v.name)
+        //         db.transaction(async tx => {
+        //             await db.transaction(async tx => {
+        //                 await tx.executeSql('CREATE TABLE IF NOT EXISTS ' + `${v.name} ` +
+        //                     '(ID INTEGER PRIMARY KEY AUTOINCREMENT, qoutes null);')
+        //                 await db.transaction(async tx => {
+        //                     await tx.executeSql(`INSERT INTO ${v.name} (qoutes) VALUES (?)`,
+        //                         [v.values])
+        //                 })
+        //             })
+                    
+        //             const save = JSON.stringify({ save: true })
+        //             await AsyncStorage.setItem('settings', save);
+
+        //             dispatch({
+        //                 type: PUSH_AFFIRMATIONS,
+        //                 data: v
+        //             })
+        //         })
+        //     })
+        // }
+        // catch (e) {
+        //     console.log('errors')
+        // }
     }
 }
+
 export const getdata = () => {
     return async dispatch => {
         try {

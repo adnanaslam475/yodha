@@ -12,7 +12,7 @@ import { styles } from '../styles';
 const audioRecorderPlayer = new AudioRecorderPlayer();
 
 const CreateAffirmation = ({ route, navigation }) => {
-    const [text, settext] = useState(route.params?.data.qoute || '')
+    const [text, settext] = useState(route.params?.data.name || '')
     const [recordTime, setrecordTime] = useState('')
     const [path, setPath] = useState(route.params?.data.file || '')
     const [start, setstart] = useState(false);
@@ -21,7 +21,7 @@ const CreateAffirmation = ({ route, navigation }) => {
     const [recordstart, setrecordstart] = useState(false)
     const [msg, setmsg] = useState('');
 
-    console.log('recerate afiramtion')
+    console.log('cerate afiramtion loop')
 
 
     const onStartRecord = async () => {
@@ -57,8 +57,9 @@ const CreateAffirmation = ({ route, navigation }) => {
     };
 
     const save = async () => {
-        console.log(route.params?.data)
-        if (text.trim().length == 0 || path.trim().length == 0) {
+        // console.log(route.params?.data);
+        
+        if (text.trim().length == 0 || path?.trim().length == 0) {
             setmsg('please enter affirmation or record voice')
         } else {
             try {
@@ -68,21 +69,23 @@ const CreateAffirmation = ({ route, navigation }) => {
                     base64 = file
                 }
                 db.transaction(tx => {
-                    tx.executeSql('CREATE TABLE IF NOT EXISTS ' + `${route.params.title} ` +
-                        '(ID INTEGER PRIMARY KEY AUTOINCREMENT, qoute TEXT, file TEXT);')
+                    tx.executeSql('CREATE TABLE IF NOT EXISTS RECORDINGS' +
+                        '(ID INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, file TEXT);')
                 })
                 await db.transaction(async tx => {
                     if (route.params?.data) {
-                        await tx.executeSql(`UPDATE ${route.params.title} SET qoute = ? , file = ? WHERE id = ${route.params?.data?.id}`,
+                        console.log('if')
+                        await tx.executeSql(`UPDATE RECORDINGS SET name = ? , file = ? WHERE id = ${route.params?.data?.id}`,
                             [text, base64])
                     } else {
-                        await tx.executeSql(`INSERT INTO ${route.params.title} (qoute,file) VALUES (?, ?)`,
-                            [text, base64])
+                        await tx.executeSql(`INSERT INTO RECORDINGS (name,file) VALUES (?, ?)`,
+                            [text, base64]);
+                        console.log('else')
                     }
                 })
-                navigation.navigate('list',
+                navigation.navigate('main',
                     {
-                        title: route.params?.title,
+                        title: route.params?.name,
                         save: route.params?.id ? 'update successfully' :
                             'saved successfully'
                     })

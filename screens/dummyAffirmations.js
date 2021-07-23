@@ -1,13 +1,9 @@
-export const arr = [{ a: 'Motivation', b: require('../assets/Images/motivation.jpg'), color: 'red' },
-{ a: 'Love', b: require('../assets/Images/love.jpg'), color: 'lightblue' },
-{ a: 'Money', b: require('../assets/Images/money.jpg') }, {
-    a: 'Health',
-    b: require('../assets/Images/health.jpg')
-},
-{ a: 'Travel', b: require('../assets/Images/travel.jpg') },
-{ a: 'Letting go', b: require('../assets/Images/letsgo.jpg') },
-{ a: 'Confidence / self esteem', b: require('../assets/Images/confidence.jpg') },
-{ a: 'Relationships', b: require('../assets/Images/relationships.jpg') }]
+export const arr = [{ a: 'GENERAL', b: require('../assets/Images/motivation.jpg'), color: 'red' },
+{ a: 'MONEY', b: require('../assets/Images/love.jpg'), color: 'lightblue' },
+{ a: 'HEALTH', b: require('../assets/Images/money.jpg') },
+{ a: 'LOVE', b: require('../assets/Images/health.jpg') },
+{ a: 'MOTIVATION', b: require('../assets/Images/travel.jpg') },
+{ a: 'FORGIVENESS', b: require('../assets/Images/letsgo.jpg') }]
 
 export const Generalaffirmation = [{
     name: 'GENERAL', values: ['I am thankful for waking up this morning and treat it like the gift that it is.',
@@ -142,3 +138,54 @@ export const Generalaffirmation = [{
         'I am unlimited',
     ]
 }]
+
+export const qoutes = ['Direction is more important than speed. your journey may take a while but as long as you`re on the right path,it will be worth the wait',
+    'we cannot become what we want by remaining what we are, growth requires change',
+    'Everyday is another oppurtunity to create a future you look forward to ',
+    'Create your dream life...',
+    'success is yours... claim it!',
+    'No matter how it may look right now, everything is going to work out',
+    'Give life to your dreams, strength to your visions and light to your path',
+    'what you think is what you become , so change the narrative',
+    'Be open, allow and enjoy your spiritual journey',
+    'Have an attitude of gratitude',
+    'Rminder, keep going on, you`re doing great',
+    'Be the energy that you want to attaract',
+    'It`s a lot easier to encourage others than it is ourselves, but we need to remember to encourage ourselves as well',
+    'It`s okay to take a break every once in a while. Take time to ground yourself and get back on track',
+    'focus on improving , not impressing',
+    'There are no coincidences only signs. think about what your coincidences are trying to tell you.',
+
+    'Dont get caught up on how it will work out. Take that leap of faith and the universe will take care of the rest. I really does have your back!',
+    'Self-discipline is the difference between your goals and your accomplishments',
+    'Motivation starts the journey but its discipline that will continue that journey',
+    'The subconscious mind is a powerful tool that once you learn to master you can instantly manifest your deepest desires',
+    'People say knowledge is power. But knowledge is only power if you apply the knowledge that you`ve gained',
+    'whatever you focus on grows',
+    'Be the friend that you would love to have',
+    'sorround yourself with people that inspire you, elevate you and make you feel good. If no one in your circle makes you feels thisway, you need a circle. foor for thought',
+    'We speak things into existance. so think before you speak',
+    'Time is non-refundable, so use it intentionally',
+    'My vibe is louder than my words',
+    'The law of repetition makes your practice become permenant, so don`t forget to repeat your affirmations!',
+    "Investing in your health is the best thing you can do. you can't enjoy all that you desire without it.",
+    'sometimes you have to let go to be free',
+    'Trust that the universe will bring your solumate in perfect timing. until then enjoy the processes',
+    'You are enough! Don`t forget it.',
+    'You are deserving of all the money that you desire, just ask the universe',
+    'You are not a fixed individual. in any moment you can choose who you want to be',
+    'Just because the days are repetitive at the moment, it doesnot mean you are not still making progress. you are not wasting your life, you still have time',
+    'Imagine your higher self and start showing up as them',
+    'The less you respond to negativity the more peacefull your life becomes',
+    'You don`t have to let that ont thing be the thing that defines you',
+    'You can not ask the darkness to leave. You must turn on the light',
+    'What holds bad things in your life is always your attention to those bad things, always',
+    'The more in harmony you are with your own existence, the more magical life becomes',
+    'Never finish a negative statement; reverse it immmediately, and wonders will happens in your life',
+    'I am deserving of a life full of luxury',
+    'Be open to discomfort  on your spiritual journey',
+    'What you seek is seeking you',
+    'Caring for myself is not self indulgent, it`s self-preservation',
+    
+
+]

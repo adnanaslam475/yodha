@@ -1,4 +1,8 @@
 import * as Action from './actions'
+
+
+
+
 const initialState = {
     affirmations: [],
 }
@@ -6,21 +10,20 @@ const initialState = {
 export default reducer = (state = initialState, action) => {
     switch (action.type) {
         case Action.GET_AFFIRMATIONS:
-            // console.log('in reducer', action.data)
             return {
                 ...state,
             }
         case Action.PUSH_AFFIRMATIONS:
-            console.log('in reducer------.>', action.data)
+            const v = [...state.affirmations]
+            // console.log('this------>', state.affirmations.filter(v => v.name))
             return {
                 ...state,
-                affirmations: action.data
+                affirmations: [...v, action.data]
             }
         case Action.SAVE_SETTINGS:
             return {
                 ...state,
             }
-
         default:
             return state;
     }

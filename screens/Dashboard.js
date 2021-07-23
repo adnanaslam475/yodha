@@ -10,15 +10,13 @@ import {
     ScrollView
 } from 'react-native';
 import * as affirmations from './dummyAffirmations';
- 
+
 export default class Dashboard extends Component {
     constructor(props) {
         super(props)
         this.state = {}
     }
-    componentDidMount() {
-    }
-
+   
     fun() {
         ToastAndroid.show(this.props.route.params.save,
             ToastAndroid.SHORT, ToastAndroid.CENTER)
@@ -32,7 +30,7 @@ export default class Dashboard extends Component {
                 return (<TouchableOpacity style={{
                     position: 'relative'
                 }}
-                    onPress={() => this.props.navigation.navigate('list',
+                    onPress={() => this.props.navigation.navigate('qoutelist',
                         {
                             title: v.a,
                             backgroundColor: v.color
