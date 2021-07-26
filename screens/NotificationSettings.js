@@ -1,7 +1,6 @@
-import React, { Component, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react';
 import {
     TouchableOpacity, View,
-    AppRegistry, EventEmitter,
     Platform, Text, ScrollView,
 } from 'react-native';
 import CheckBox from 'react-native-check-box'
@@ -148,7 +147,6 @@ const NotificationSettings = ({ navigation }) => {
     const save = async () => {
         const jsonValue = JSON.stringify({ time, check, arr })
         await AsyncStorage.setItem('settings', jsonValue)
-        console.log('save')
         navigation.navigate('main', {
             save: 'settings saved successfully'
         })

@@ -18,14 +18,16 @@ function App() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    const func = async () => {
-      const res = await AsyncStorage.getItem('save');
-      console.log('sto', res)
-      if (!res) {
-        // dispatch(pushallaffirmation())
-      }
-    }
-    func()
+    // const func = async () => {
+    //   const res = await AsyncStorage.getItem('save');
+    //   console.log('sto', res)
+    //   if (!res) {
+    //     // dispatch(pushallaffirmation())
+
+    //   }
+    // }
+    // func()
+    createTable()
   }, [])
   return <Navigator />
 };

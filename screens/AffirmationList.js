@@ -8,7 +8,7 @@ import AudioRecorderPlayer from 'react-native-audio-recorder-player';
 import RNFS from 'react-native-fs';
 import * as affir from './dummyAffirmations'
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { db } from './Sqlite'
+import { db,ExecuteQuery } from './Sqlite'
 
 const audioRecorderPlayer = new AudioRecorderPlayer();
 const AffirmationList = ({ route, navigation }) => {
@@ -50,39 +50,28 @@ const AffirmationList = ({ route, navigation }) => {
 
     useEffect(() => {
         setloading(false)
-        
-        setList(affir.Generalaffirmation.filter(v => v.name === route?.params?.title)[0]?.values)
+        setList(affir.Generalaffirmation.filter(v => v.name === route.params?.title)[0]?.values)
     }, [])
 
 
 
     const deleteaffirmtion = async id => {
         try {
-            await db.transaction(async tx => {
-                await tx.executeSql(`DELETE FROM ${route.params.title} WHERE ID=${id}`,
-                    [], (tx, results) => {
-                        setAffirmations(affirmations.filter((v, i) => v.id !== id))
-                        ToastAndroid.show('deleted successfully',
-                            ToastAndroid.SHORT, ToastAndroid.CENTER)
-                    })
-            })
+            await ExecuteQuery(`DELETE FROM ${route.params.title} WHERE ID=${id}`, []);
+            setAffirmations(affirmations.filter((v, i) => v.id !== id))
+            ToastAndroid.show('deleted successfully',
+                ToastAndroid.SHORT, ToastAndroid.CENTER)
         }
         catch (error) {
+            console.log('err68', error)
         }
     }
 
-
     const add = async v => {
         console.log(v)
-        await db.transaction(async tx => {
-            await tx.executeSql('CREATE TABLE IF NOT EXISTS ' + `${route.params.title} ` +
-                '(ID INTEGER PRIMARY KEY AUTOINCREMENT, qoutes TEXT);')
-
-            await db.transaction(async tx => {
-                await tx.executeSql(`INSERT INTO ${route.params.title} (qoutes) VALUES (?)`,
-                    [v])
-            })
-        })
+        await ExecuteQuery('CREATE TABLE IF NOT EXISTS ' + `${route.params.title} ` +
+            '(ID INTEGER PRIMARY KEY AUTOINCREMENT, qoutes TEXT);')
+        await ExecuteQuery(`INSERT INTO ${route.params.title} (qoutes) VALUES (?)`, [v]);
         ToastAndroid.show('added successfully',
             ToastAndroid.SHORT, ToastAndroid.CENTER);
     }

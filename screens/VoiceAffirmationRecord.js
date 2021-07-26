@@ -75,7 +75,6 @@ export default class VoiceAffirmationRecord extends Component {
     };
 
     onStopPlay = async () => {
-        console.log('onStopPlay');
         audioRecorderPlayer.stopPlayer();
         audioRecorderPlayer.removePlayBackListener();
     };

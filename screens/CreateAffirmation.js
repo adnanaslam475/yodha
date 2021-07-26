@@ -5,7 +5,7 @@ import {
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import AudioRecorderPlayer from 'react-native-audio-recorder-player';
-import { db } from './Sqlite'
+import { db, ExecuteQuery } from './Sqlite'
 import RNFetchBlob from 'rn-fetch-blob';
 import { styles } from '../styles';
 
@@ -13,25 +13,24 @@ const audioRecorderPlayer = new AudioRecorderPlayer();
 
 const CreateAffirmation = ({ route, navigation }) => {
     const [text, settext] = useState(route.params?.data.name || '')
-    const [recordTime, setrecordTime] = useState('')
     const [path, setPath] = useState(route.params?.data.file || '')
     const [start, setstart] = useState(false);
     const [playcomplete, setplaycomplete] = useState(false)
     const [show, setshow] = useState(route.params?.data.file ? true : false)
     const [recordstart, setrecordstart] = useState(false)
     const [msg, setmsg] = useState('');
+    const [time, settime] = useState('');
 
-    console.log('cerate afiramtion loop')
 
-
+    console.log('--->', route.params?.data.file)
     const onStartRecord = async () => {
         setmsg('')
         const res = await audioRecorderPlayer.startRecorder();
         audioRecorderPlayer.addRecordBackListener(e => {
-            setrecordTime(audioRecorderPlayer.mmssss(Math.floor(e.currentPosition)))
+            console.log(e.currentPosition)
         })
-        setstart(true)
-        setrecordstart(true)
+        setstart(true);
+        setrecordstart(true);
         res && setPath(res)
     }
 
@@ -41,8 +40,10 @@ const CreateAffirmation = ({ route, navigation }) => {
         setPath(msg)
         setplaycomplete(true)
         audioRecorderPlayer.addPlayBackListener((e) => {
+            settime(e.currentPosition)
             if (e.currentPosition == e.duration) {
-                setplaycomplete(false)
+                setplaycomplete(false);
+                settime('')
             }
             return;
         })
@@ -53,12 +54,10 @@ const CreateAffirmation = ({ route, navigation }) => {
         audioRecorderPlayer.removeRecordBackListener();
         setstart(false)
         setrecordstart(false)
-        console.log('klklkl', result);
     };
 
+
     const save = async () => {
-        // console.log(route.params?.data);
-        
         if (text.trim().length == 0 || path?.trim().length == 0) {
             setmsg('please enter affirmation or record voice')
         } else {
@@ -68,21 +67,13 @@ const CreateAffirmation = ({ route, navigation }) => {
                     const file = await RNFetchBlob.fs.readFile(path, 'base64')
                     base64 = file
                 }
-                db.transaction(tx => {
-                    tx.executeSql('CREATE TABLE IF NOT EXISTS RECORDINGS' +
-                        '(ID INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, file TEXT);')
-                })
-                await db.transaction(async tx => {
-                    if (route.params?.data) {
-                        console.log('if')
-                        await tx.executeSql(`UPDATE RECORDINGS SET name = ? , file = ? WHERE id = ${route.params?.data?.id}`,
-                            [text, base64])
-                    } else {
-                        await tx.executeSql(`INSERT INTO RECORDINGS (name,file) VALUES (?, ?)`,
-                            [text, base64]);
-                        console.log('else')
-                    }
-                })
+                await ExecuteQuery("CREATE TABLE IF NOT EXISTS RECORDINGS (ID INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, file TEXT);", [])
+                if (route.params?.data) {
+                    await ExecuteQuery(`UPDATE RECORDINGS SET name = ? , file = ? WHERE id = 
+                        ${route.params?.data.id}`, [text, base64]);
+                } else {
+                    await ExecuteQuery(`INSERT INTO RECORDINGS (name,file) VALUES (?, ?)`, [text, base64]);
+                }
                 navigation.navigate('main',
                     {
                         title: route.params?.name,
@@ -101,13 +92,14 @@ const CreateAffirmation = ({ route, navigation }) => {
             <TextInput style={styles.input} placeholder='enter Affirmation'
                 value={text} onChangeText={t => { settext(t); setmsg('') }} />
             <View style={{ display: 'flex', padding: 50 }}>
-                {!show ? <TouchableOpacity style={{ ...styles.savebtn, backgroundColor: 'darkred' }}
+                {show ? <TouchableOpacity style={{ ...styles.savebtn, backgroundColor: 'darkred' }}
                     onPress={() => setshow(true)}>
                     <Text style={styles.text}>Record new audio</Text>
                 </TouchableOpacity> : <View style={styles.icon_view}>
-                    {path ? <TouchableOpacity onPress={onStartPlay}>
-                        <Ionicons name={playcomplete ? 'pause' : 'play'} style={{ marginLeft: 50 }}
+                    {path ? <TouchableOpacity style={{ flexDirection: 'column' }} onPress={onStartPlay}>
+                        <Ionicons name={playcomplete ? 'pause' : 'play'}
                             color='black' size={50} />
+                        {/* <Text>{time}</Text> */}
                     </TouchableOpacity> : null}
                     <TouchableOpacity onPress={start == false ? onStartRecord : onStopRecord}>
                         <Ionicons name={'mic'}
