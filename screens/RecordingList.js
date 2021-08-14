@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react'
 import {
     View, Text, ToastAndroid, ActivityIndicator,
-    TouchableOpacity, ScrollView, Dimensions
+    TouchableOpacity, ScrollView, Dimensions,
+    BackHandler
 } from 'react-native'
 import { styles } from '../styles'
 import AudioRecorderPlayer from 'react-native-audio-recorder-player';
 import RNFS from 'react-native-fs';
-import AntDesign from 'react-native-vector-icons/AntDesign'
-// import * as affir from './dummyAffirmations'
+import AntDesign from 'react-native-vector-icons/AntDesign';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { db, ExecuteQuery } from './Sqlite';
 
@@ -62,6 +62,18 @@ const RecordingList = ({ route, navigation }) => {
     }, [route.params])
 
 
+    useEffect(() => {
+        const backAction = async () => {
+            await audioRecorderPlayer.removePlayBackListener();
+            await audioRecorderPlayer.removeRecordBackListener();
+        };
+        const backHandler = BackHandler.addEventListener(
+            "hardwareBackPress",
+            backAction
+        );
+        return () => backHandler.remove();
+    }, []);
+    
     const deleteaffirmtion = async id => {
         try {
             await ExecuteQuery(`DELETE FROM RECORDINGS WHERE ID=${id}`, []);
@@ -78,6 +90,7 @@ const RecordingList = ({ route, navigation }) => {
         await audioRecorderPlayer.removePlayBackListener();
         setCurr('')
     };
+
 
     return (
         <ScrollView>
@@ -99,8 +112,11 @@ const RecordingList = ({ route, navigation }) => {
                                 onPress={() => onStartPlay(v.id, v.file)}
                                 color='gray' size={40} />}
                         <AntDesign name='edit'
-                            onPress={() => navigation.navigate('affirm_create',
-                                { data: v })}
+                            onPress={() => {
+                                onStopPlay();
+                                navigation.navigate('affirm_create',
+                                    { data: v })
+                            }}
                             color='gray' size={40} />
                     </View>)
                 })}

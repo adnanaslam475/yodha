@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react';
 import {
     TouchableOpacity, TextInput,
-    Text, View
+    Text, View, BackHandler
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import AudioRecorderPlayer from 'react-native-audio-recorder-player';
@@ -16,13 +16,11 @@ const CreateAffirmation = ({ route, navigation }) => {
     const [path, setPath] = useState(route.params?.data.file || '')
     const [start, setstart] = useState(false);
     const [playcomplete, setplaycomplete] = useState(false)
-    const [show, setshow] = useState(route.params?.data.file ? true : false)
+    const [show, setshow] = useState(route.params?.data ? true : false)
     const [recordstart, setrecordstart] = useState(false)
     const [msg, setmsg] = useState('');
     const [time, settime] = useState('');
 
-
-    console.log('--->', route.params?.data.file)
     const onStartRecord = async () => {
         setmsg('')
         const res = await audioRecorderPlayer.startRecorder();
@@ -50,11 +48,12 @@ const CreateAffirmation = ({ route, navigation }) => {
     };
 
     const onStopRecord = async () => {
-        const result = await audioRecorderPlayer.stopRecorder();
-        audioRecorderPlayer.removeRecordBackListener();
+        await audioRecorderPlayer.stopRecorder();
+        await audioRecorderPlayer.removeRecordBackListener();
         setstart(false)
         setrecordstart(false)
     };
+
 
 
     const save = async () => {
@@ -92,14 +91,13 @@ const CreateAffirmation = ({ route, navigation }) => {
             <TextInput style={styles.input} placeholder='enter Affirmation'
                 value={text} onChangeText={t => { settext(t); setmsg('') }} />
             <View style={{ display: 'flex', padding: 50 }}>
-                {show ? <TouchableOpacity style={{ ...styles.savebtn, backgroundColor: 'darkred' }}
+                {show && route.params.data == undefined ? <TouchableOpacity style={{ ...styles.savebtn, backgroundColor: 'darkred' }}
                     onPress={() => setshow(true)}>
                     <Text style={styles.text}>Record new audio</Text>
                 </TouchableOpacity> : <View style={styles.icon_view}>
                     {path ? <TouchableOpacity style={{ flexDirection: 'column' }} onPress={onStartPlay}>
                         <Ionicons name={playcomplete ? 'pause' : 'play'}
                             color='black' size={50} />
-                        {/* <Text>{time}</Text> */}
                     </TouchableOpacity> : null}
                     <TouchableOpacity onPress={start == false ? onStartRecord : onStopRecord}>
                         <Ionicons name={'mic'}

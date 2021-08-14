@@ -1,14 +1,15 @@
 import React, { useEffect, useState } from 'react'
 import {
     View, Text, ToastAndroid, ActivityIndicator,
-    TouchableOpacity, ScrollView, Dimensions
+    TouchableOpacity, ScrollView, Dimensions,
+    BackHandler
 } from 'react-native'
 import { styles } from '../styles'
 import AudioRecorderPlayer from 'react-native-audio-recorder-player';
 import RNFS from 'react-native-fs';
 import * as affir from './dummyAffirmations'
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { db,ExecuteQuery } from './Sqlite'
+import { db, ExecuteQuery } from './Sqlite'
 
 const audioRecorderPlayer = new AudioRecorderPlayer();
 const AffirmationList = ({ route, navigation }) => {
@@ -54,6 +55,19 @@ const AffirmationList = ({ route, navigation }) => {
     }, [])
 
 
+    useEffect(() => {
+        const backAction = async () => {
+            console.log('this1');
+            await audioRecorderPlayer.removePlayBackListener();
+            await audioRecorderPlayer.removeRecordBackListener();
+        };
+        const backHandler = BackHandler.addEventListener(
+            "hardwareBackPress",
+            backAction
+        );
+        return () => backHandler.remove();
+    }, []);
+    
 
     const deleteaffirmtion = async id => {
         try {

@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import {
-    TouchableOpacity, View,
+    TouchableOpacity, View,ToastAndroid,
     Platform, Text, ScrollView,
 } from 'react-native';
 import CheckBox from 'react-native-check-box'
-import * as affirmations from './dummyAffirmations'
+import * as affirmations from './dummyAffirmations';
 import PushNotification from 'react-native-push-notification';
 import { styles } from '../styles';
 import RNDateTimePicker from '@react-native-community/datetimepicker';
@@ -22,7 +22,6 @@ PushNotification.configure({
 });
 
 async function ScheduleNotification(newtime, arr, check) {
-    let ispaused = false
     async function f() {
         await arr.forEach(async (v, idx) => {
             await db.transaction(tx => {
@@ -147,9 +146,12 @@ const NotificationSettings = ({ navigation }) => {
     const save = async () => {
         const jsonValue = JSON.stringify({ time, check, arr })
         await AsyncStorage.setItem('settings', jsonValue)
-        navigation.navigate('main', {
-            save: 'settings saved successfully'
-        })
+
+        ToastAndroid.show('saved successfully',
+            ToastAndroid.SHORT, ToastAndroid.CENTER)
+        // navigation.navigate('main', {
+        //     save: 'settings saved successfully'
+        // })
     }
 
 
